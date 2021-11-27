@@ -1,11 +1,9 @@
 package com.example.spring_tutorial.service;
 
 import com.example.spring_tutorial.configuration.AppConstant;
-import com.example.spring_tutorial.domain.dto.property.BuyerInfo;
 import com.example.spring_tutorial.domain.dto.property.NewProperty;
 import com.example.spring_tutorial.domain.dto.property.PropertyViewModel;
 import com.example.spring_tutorial.domain.entity.Property;
-import com.example.spring_tutorial.domain.entity.SaleInfo;
 import com.example.spring_tutorial.domain.exception.NotFoundException;
 import com.example.spring_tutorial.repository.ApplicationUserRepository;
 import com.example.spring_tutorial.repository.ConstantsRepository;
@@ -13,7 +11,6 @@ import com.example.spring_tutorial.repository.PropertyRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
 import java.util.List;
 
 @Service
