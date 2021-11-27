@@ -41,7 +41,7 @@ public class AuthApi {
                     jwtTokenUtil.generateAccessToken(user)
             );
             return ResponseEntity.ok().body(
-                    new BaseResponse<>(retUser, true, 200)
+                    new BaseResponse<>(retUser, true, HttpStatus.OK.value())
             );
         } catch (BadCredentialsException ex) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
@@ -56,7 +56,7 @@ public class AuthApi {
         ret.setToken(jwtTokenUtil.generateAccessToken(newUser));
         ret.setUser(userView);
         return ResponseEntity.ok().body(
-                new BaseResponse<>(ret, true, 201)
+                new BaseResponse<>(ret, true, HttpStatus.CREATED.value())
         );
     }
 

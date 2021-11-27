@@ -2,10 +2,7 @@ package com.example.spring_tutorial.domain.entity;
 
 import lombok.*;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
-import javax.persistence.UniqueConstraint;
+import javax.persistence.*;
 
 @Table(
         uniqueConstraints = {
@@ -21,6 +18,7 @@ import javax.persistence.UniqueConstraint;
 @Builder
 public class Constants {
     @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
 
     private String key;

@@ -8,6 +8,7 @@ import com.example.spring_tutorial.service.PropertyService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.lang.Nullable;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -21,13 +22,32 @@ public class PropertyApi {
     private final PropertyService service;
 
     @GetMapping("")
-    public ResponseEntity<BaseResponse<List<Property>>> getAllProperty() {
+    public ResponseEntity<?> getPropertyHandler(@RequestParam @Nullable Long id) {
+        if(id == null) {
+            return getAllProperty();
+        } else {
+           return getPropertyById(id);
+        }
+    }
+
+    private ResponseEntity<BaseResponse<List<Property>>> getAllProperty() {
         final List<Property> properties = service.fetchAllProperty();
         return ResponseEntity.ok().body(
                 BaseResponse.<List<Property>>builder()
                         .statusCode(HttpStatus.OK.value())
                         .success(true)
                         .data(properties)
+                        .build()
+        );
+    }
+
+    private ResponseEntity<BaseResponse<Property>> getPropertyById(Long id) {
+        final  Property property = service.fetchPropertyById(id);
+        return ResponseEntity.ok().body(
+                BaseResponse.<Property>builder()
+                        .data(property)
+                        .success(true)
+                        .statusCode(HttpStatus.OK.value())
                         .build()
         );
     }

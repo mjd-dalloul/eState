@@ -6,11 +6,11 @@ import com.example.spring_tutorial.domain.dto.property.NewProperty;
 import com.example.spring_tutorial.domain.dto.property.PropertyViewModel;
 import com.example.spring_tutorial.domain.entity.Property;
 import com.example.spring_tutorial.domain.entity.SaleInfo;
+import com.example.spring_tutorial.domain.exception.NotFoundException;
 import com.example.spring_tutorial.repository.ApplicationUserRepository;
 import com.example.spring_tutorial.repository.ConstantsRepository;
 import com.example.spring_tutorial.repository.PropertyRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -24,19 +24,21 @@ public class PropertyService {
     private final ApplicationUserRepository userRepository;
 
     public void deleteProperty(Long id) {
-        final Property property = repository.getById(id);
+        final Property property = repository.findById(id).orElseThrow(
+                () -> new NotFoundException("Property not found with the given ID")
+        );
         repository.delete(property);
     }
 
     public Property updateProperty(Long id, PropertyViewModel property) {
-        Property p = repository.getById(id);
-        if(property.getPrice() != null) {
+        Property p = repository.findById(id).orElseThrow();
+        if (property.getPrice() != null) {
             p.setPrice(property.getPrice());
         }
-        if(property.getDescription() != null) {
+        if (property.getDescription() != null) {
             p.setDescription(property.getDescription());
         }
-        if(property.getShares() != null) {
+        if (property.getShares() != null) {
             p.setShares(property.getShares());
         }
         repository.save(p);
@@ -49,7 +51,7 @@ public class PropertyService {
                 .price(newProperty.getPrice())
                 .shares(newProperty.getShares())
                 .build();
-        if(property.getShares() == null) {
+        if (property.getShares() == null) {
             property.setShares(constantsRepository.findByKey(AppConstant.share).getValue());
         }
         repository.save(property);
@@ -75,4 +77,9 @@ public class PropertyService {
         return repository.findAll();
     }
 
+    public Property fetchPropertyById(Long id) {
+        return repository.findById(id).orElseThrow(
+                () -> new NotFoundException("Property not found with the given ID")
+        );
+    }
 }
