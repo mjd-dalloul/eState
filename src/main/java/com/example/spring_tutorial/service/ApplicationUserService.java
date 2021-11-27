@@ -28,4 +28,5 @@ public class ApplicationUserService {
         userRepository.save(newUser);
         return newUser;
     }
+
 }

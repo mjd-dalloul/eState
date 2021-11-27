@@ -58,16 +58,6 @@ public class PropertyService {
         return property;
     }
 
-    public Property buyProperty(BuyerInfo info, Long propertyId) {
-        Property property = repository.getById(propertyId);
-        SaleInfo saleInfo = SaleInfo.builder().salePrice(info.getPrice())
-                .buyerInfo(userRepository.getById(info.getId()))
-                .saleDate(new Date(System.currentTimeMillis()))
-                .build();
-        property.setSaleInfo(saleInfo);
-        repository.save(property);
-        return property;
-    }
 
     public List<Property> fetchAvailableProperty() {
         return repository.findBySaleInfoIsNull();
