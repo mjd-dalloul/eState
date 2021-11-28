@@ -19,11 +19,11 @@ public class BuyApi {
 
     @PutMapping("")
     public ResponseEntity<BaseResponse<Property>> buyProperty(@RequestParam Long id, @RequestBody @Valid BuyerInfo buyerInfo) {
+        buyingService.buyProperty(buyerInfo, id);
         return ResponseEntity.ok().body(
                 BaseResponse.<Property>builder()
                         .statusCode(HttpStatus.OK.value())
                         .success(true)
-                        .data(buyingService.buyProperty(buyerInfo, id))
                         .build()
         );
     }
