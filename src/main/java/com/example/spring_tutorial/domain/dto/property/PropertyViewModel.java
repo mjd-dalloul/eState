@@ -20,6 +20,6 @@ public class PropertyViewModel {
     private Integer shares;
     @NotNull
     @Min(1)
-    private Integer price;
+    private Long price;
 
 }

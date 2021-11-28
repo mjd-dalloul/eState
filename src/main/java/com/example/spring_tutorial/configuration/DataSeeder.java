@@ -35,7 +35,7 @@ public class DataSeeder {
             propertyRepository.save(Property
                     .builder()
                     .description("dummy data")
-                    .price(50 * i)
+                    .price((long) (50 * i))
                     .shares(i)
                     .build());
         }

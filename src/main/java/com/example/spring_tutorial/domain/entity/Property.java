@@ -18,7 +18,7 @@ public class Property {
 
     private Integer shares;
 
-    private Integer price;
+    private Long price;
 
     @Embedded
     private SaleInfo saleInfo;

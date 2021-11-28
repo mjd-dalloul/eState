@@ -17,7 +17,7 @@ public class NewProperty {
 
     @NotNull
     @Min(1)
-    private Integer price;
+    private Long price;
     @NotBlank
     private String description;
     private Integer shares;
