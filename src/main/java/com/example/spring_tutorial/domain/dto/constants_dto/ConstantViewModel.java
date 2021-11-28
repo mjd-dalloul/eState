@@ -14,6 +14,8 @@ import javax.validation.constraints.NotNull;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ConstantViewModel {
+    @NotNull
+    private Long id;
     @NotBlank
     private String key;
     @Min(1)

@@ -1,5 +1,6 @@
 package com.example.spring_tutorial.api;
 
+import com.example.spring_tutorial.configuration.AppConstant;
 import com.example.spring_tutorial.domain.dto.BaseResponse;
 import com.example.spring_tutorial.domain.dto.auth_dto.CustomUserSecurity;
 import com.example.spring_tutorial.domain.dto.property.BuyFormModel;
@@ -7,6 +8,8 @@ import com.example.spring_tutorial.domain.dto.property.BuyerInfo;
 import com.example.spring_tutorial.domain.entity.Property;
 import com.example.spring_tutorial.service.BuyingService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.CacheManager;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -49,5 +52,13 @@ public class BuyApi {
                         )
                         .build()
         );
+    }
+@Autowired
+    CacheManager cacheManager;
+    @GetMapping("/cache")
+    public void tmp() {
+        System.out.println("CACHE");
+        System.out.println(cacheManager.getCache(AppConstant.appMainCacheName).get(AppConstant.share).get());
+        System.out.println(cacheManager.getCache(AppConstant.appMainCacheName).get(AppConstant.profitRate));
     }
 }

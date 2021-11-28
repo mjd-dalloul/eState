@@ -8,6 +8,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface ConstantsRepository extends JpaRepository<Constants, Long> {
-    @Cacheable(AppConstant.appMainCacheName)
+    @Cacheable(value = AppConstant.appMainCacheName, key = "#key")
     public Constants findByKey(String key);
 }

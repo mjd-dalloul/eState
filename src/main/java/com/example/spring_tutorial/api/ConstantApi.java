@@ -2,16 +2,15 @@ package com.example.spring_tutorial.api;
 
 import com.example.spring_tutorial.domain.dto.BaseResponse;
 import com.example.spring_tutorial.domain.dto.constants_dto.ConstantViewModel;
+import com.example.spring_tutorial.domain.entity.Constants;
 import com.example.spring_tutorial.service.ConstantService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @RestController
 @RequestMapping(path = "api/constant")
@@ -20,14 +19,25 @@ public class ConstantApi {
     private final ConstantService service;
 
     @PutMapping("")
-    public ResponseEntity<BaseResponse<Void>> changeConstantValue(
+    public ResponseEntity<BaseResponse<Constants>> changeConstantValue(
             @RequestBody @Valid ConstantViewModel constantViewModel
     ) {
-        service.setNewValueForConstant(constantViewModel);
         return ResponseEntity.ok().body(
-                BaseResponse.<Void>builder()
+                BaseResponse.<Constants>builder()
+                        .success(true)
+                        .data(service.setNewValueForConstant(constantViewModel))
+                        .statusCode(HttpStatus.OK.value())
+                        .build()
+        );
+    }
+
+    @GetMapping("")
+    public ResponseEntity<BaseResponse<List<Constants>>> fetchConstants() {
+        return ResponseEntity.ok().body(
+                BaseResponse.<List<Constants>>builder()
                         .success(true)
                         .statusCode(HttpStatus.OK.value())
+                        .data(service.fetchConstants())
                         .build()
         );
     }
