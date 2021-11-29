@@ -43,7 +43,7 @@ public class PropertyRepositoryTests {
     public void addPropertyTest() {
         Property property = Property.builder()
                 .description("test")
-                .shares(5)
+                .shares(constantsRepository.findByKey(AppConstant.share).getValue())
                 .price(213L)
                 .build();
         repository.save(property);
