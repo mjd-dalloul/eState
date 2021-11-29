@@ -11,5 +11,5 @@ public class BuyerInfo {
     private Long id;
     @NotNull
     @Min(1)
-    private Integer price;
+    private Long price;
 }

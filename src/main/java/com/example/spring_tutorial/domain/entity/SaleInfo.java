@@ -14,7 +14,7 @@ public class SaleInfo {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn()
     private ApplicationUser buyerInfo;
-    private Integer salePrice;
+    private Long salePrice;
     @Temporal(TemporalType.TIMESTAMP)
     private Date saleDate;
 }

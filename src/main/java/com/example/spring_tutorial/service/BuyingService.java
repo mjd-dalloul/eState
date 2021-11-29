@@ -75,7 +75,7 @@ public class BuyingService {
         }
     }
 
-    private Long calcDefaultPrice(Integer price, Integer profitRate) {
+    private Long calcDefaultPrice(Long price, Integer profitRate) {
         double profitAmount = (price * (profitRate / 100.0));
         return Math.round(price + profitAmount);
     }
