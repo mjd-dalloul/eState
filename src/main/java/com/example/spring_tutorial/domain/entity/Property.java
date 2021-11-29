@@ -20,6 +20,9 @@ public class Property {
 
     private Long price;
 
+    @Version
+    private Long version;
+
     @Embedded
     private SaleInfo saleInfo;
 

@@ -34,6 +34,7 @@ public class PropertyRepositoryTests {
                         .value(5)
                 .build());
         repository.save(Property.builder()
+                        .id(1L)
                 .description("test")
                 .price(213L)
                 .build());
@@ -78,5 +79,19 @@ public class PropertyRepositoryTests {
         repository.delete(p);
         Property deletedProperty =  repository.findById(id).orElse(null);
         Assertions.assertThat(deletedProperty).isEqualTo(null);
+    }
+
+    @Test
+    public void optimisticLockTest() {
+        Property firstRequest = repository.findById(3L).get();
+        Property secondRequest = repository.findById(3L).get();
+        secondRequest.setPrice(11L);
+        repository.save(secondRequest);
+        firstRequest.setPrice(5L);
+        repository.save(firstRequest);
+        final Property result = repository.findById(3L).get();
+        //Assertions.assertThat(repository.findById(3L).get().getPrice()).isEqualTo(50L);
+        //Assertions.assertThat(repository.findById(3L).get().getPrice()).isEqualTo(11L);
+        Assertions.assertThat(repository.findById(3L).get().getPrice()).isEqualTo(5L);
     }
 }
