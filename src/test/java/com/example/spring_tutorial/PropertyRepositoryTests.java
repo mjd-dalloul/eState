@@ -13,6 +13,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 @DataJpaTest
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
@@ -82,16 +85,33 @@ public class PropertyRepositoryTests {
     }
 
     @Test
-    public void optimisticLockTest() {
-        Property firstRequest = repository.findById(3L).get();
-        Property secondRequest = repository.findById(3L).get();
-        secondRequest.setPrice(11L);
-        repository.save(secondRequest);
-        firstRequest.setPrice(5L);
-        repository.save(firstRequest);
-        final Property result = repository.findById(3L).get();
-        //Assertions.assertThat(repository.findById(3L).get().getPrice()).isEqualTo(50L);
-        //Assertions.assertThat(repository.findById(3L).get().getPrice()).isEqualTo(11L);
-        Assertions.assertThat(repository.findById(3L).get().getPrice()).isEqualTo(5L);
+    public void optimisticLockTest() throws Exception  {
+        ExecutorService executorService = Executors.newFixedThreadPool(2);
+        final Long propertyId = repository.findAll().get(0).getId();
+        System.out.println("VERSION IS");
+        System.out.println(repository.findAll().get(0).getPrice());
+        executorService.execute(() -> {
+            Property property = repository.findById(propertyId).get();
+            property.setPrice(2020L);
+            try {
+                Thread.sleep(4000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            property = repository.save(property);
+            //Assertions.assertThat(property.getPrice()).isEqualTo(2020L);
+
+        });
+        executorService.execute(() -> {
+            Property property = repository.findById(propertyId).get();
+            property.setPrice(3030L);
+            repository.save(property);
+
+        });
+
+        executorService.shutdown();
+        executorService.awaitTermination(10, TimeUnit.MINUTES);
+        final Property p = repository.findById(propertyId).get();
+        Assertions.assertThat(p.getPrice()).isEqualTo(2020L);
     }
 }
