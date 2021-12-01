@@ -1,8 +1,10 @@
 package com.example.spring_tutorial;
 
 import com.example.spring_tutorial.configuration.AppConstant;
+import com.example.spring_tutorial.domain.entity.ApplicationUser;
 import com.example.spring_tutorial.domain.entity.Constants;
 import com.example.spring_tutorial.domain.entity.Property;
+import com.example.spring_tutorial.domain.entity.SaleInfo;
 import com.example.spring_tutorial.repository.ConstantsRepository;
 import com.example.spring_tutorial.repository.PropertyRepository;
 import org.assertj.core.api.Assertions;
@@ -12,6 +14,7 @@ import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
+import java.util.Date;
 import java.util.List;
 
 @DataJpaTest
@@ -83,15 +86,26 @@ public class PropertyRepositoryTests {
 
     @Test
     public void optimisticLockTest() {
-        Property firstRequest = repository.findById(3L).get();
-        Property secondRequest = repository.findById(3L).get();
-        secondRequest.setPrice(11L);
-        repository.save(secondRequest);
-        firstRequest.setPrice(5L);
-        repository.save(firstRequest);
-        final Property result = repository.findById(3L).get();
-        //Assertions.assertThat(repository.findById(3L).get().getPrice()).isEqualTo(50L);
-        //Assertions.assertThat(repository.findById(3L).get().getPrice()).isEqualTo(11L);
-        Assertions.assertThat(repository.findById(3L).get().getPrice()).isEqualTo(5L);
+        final Long id = repository.findAll().get(0).getId();
+        Property firstRequest = repository.findById(id).get();
+        Property secondRequest = repository.findById(id).get();
+        secondRequest.setSaleInfo(SaleInfo.builder()
+                        .saleDate(new Date(System.currentTimeMillis()))
+                        .salePrice(2020L)
+                        .buyerInfo(ApplicationUser.builder()
+                                .id(1L)
+                                .build())
+                .build());
+        firstRequest.setSaleInfo(SaleInfo.builder()
+                .saleDate(new Date(System.currentTimeMillis()))
+                .salePrice(3030L)
+                .buyerInfo(ApplicationUser.builder()
+                        .id(2L)
+                        .build())
+                .build());
+        firstRequest = repository.save(firstRequest);
+        secondRequest = repository.save(secondRequest);
+        Assertions.assertThat(repository.findById(id).get().getSaleInfo().getBuyerInfo().getId()).isEqualTo(2L);
+        Assertions.assertThat(repository.findById(id).get().getSaleInfo().getBuyerInfo().getId()).isNotEqualTo(1L);
     }
 }

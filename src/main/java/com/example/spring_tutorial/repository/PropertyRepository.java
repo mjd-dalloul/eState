@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.List;
@@ -16,7 +17,7 @@ import java.util.List;
 public interface PropertyRepository extends JpaRepository<Property, Long> {
     public List<Property> findBySaleInfoIsNull();
 
-    @Modifying
+    @Transactional @Modifying
     @Query("update Property p set p.saleInfo = :saleInfo where p.id = :id")
     public void updateSaleInfo(
             @Param("id") Long id,
