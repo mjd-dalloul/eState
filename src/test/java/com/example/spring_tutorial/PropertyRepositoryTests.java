@@ -1,8 +1,10 @@
 package com.example.spring_tutorial;
 
 import com.example.spring_tutorial.configuration.AppConstant;
+import com.example.spring_tutorial.domain.entity.ApplicationUser;
 import com.example.spring_tutorial.domain.entity.Constants;
 import com.example.spring_tutorial.domain.entity.Property;
+import com.example.spring_tutorial.domain.entity.SaleInfo;
 import com.example.spring_tutorial.repository.ConstantsRepository;
 import com.example.spring_tutorial.repository.PropertyRepository;
 import org.assertj.core.api.Assertions;
@@ -12,10 +14,8 @@ import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
+import java.util.Date;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
 
 @DataJpaTest
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
@@ -85,33 +85,27 @@ public class PropertyRepositoryTests {
     }
 
     @Test
-    public void optimisticLockTest() throws Exception  {
-        ExecutorService executorService = Executors.newFixedThreadPool(2);
-        final Long propertyId = repository.findAll().get(0).getId();
-        System.out.println("VERSION IS");
-        System.out.println(repository.findAll().get(0).getPrice());
-        executorService.execute(() -> {
-            Property property = repository.findById(propertyId).get();
-            property.setPrice(2020L);
-            try {
-                Thread.sleep(4000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            property = repository.save(property);
-            //Assertions.assertThat(property.getPrice()).isEqualTo(2020L);
-
-        });
-        executorService.execute(() -> {
-            Property property = repository.findById(propertyId).get();
-            property.setPrice(3030L);
-            repository.save(property);
-
-        });
-
-        executorService.shutdown();
-        executorService.awaitTermination(10, TimeUnit.MINUTES);
-        final Property p = repository.findById(propertyId).get();
-        Assertions.assertThat(p.getPrice()).isEqualTo(2020L);
+    public void optimisticLockTest() {
+        final Long id = repository.findAll().get(0).getId();
+        Property firstRequest = repository.findById(id).get();
+        Property secondRequest = repository.findById(id).get();
+        secondRequest.setSaleInfo(SaleInfo.builder()
+                        .saleDate(new Date(System.currentTimeMillis()))
+                        .salePrice(2020L)
+                        .buyerInfo(ApplicationUser.builder()
+                                .id(1L)
+                                .build())
+                .build());
+        firstRequest.setSaleInfo(SaleInfo.builder()
+                .saleDate(new Date(System.currentTimeMillis()))
+                .salePrice(3030L)
+                .buyerInfo(ApplicationUser.builder()
+                        .id(2L)
+                        .build())
+                .build());
+        firstRequest = repository.save(firstRequest);
+        secondRequest = repository.save(secondRequest);
+        Assertions.assertThat(repository.findById(id).get().getSaleInfo().getBuyerInfo().getId()).isEqualTo(2L);
+        Assertions.assertThat(repository.findById(id).get().getSaleInfo().getBuyerInfo().getId()).isNotEqualTo(1L);
     }
 }
