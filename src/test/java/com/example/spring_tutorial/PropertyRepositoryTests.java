@@ -103,7 +103,9 @@ public class PropertyRepositoryTests {
                         .id(2L)
                         .build())
                 .build());
+        repository.flush();
         firstRequest = repository.save(firstRequest);
+        repository.flush();
         secondRequest = repository.save(secondRequest);
         Assertions.assertThat(repository.findById(id).get().getSaleInfo().getBuyerInfo().getId()).isEqualTo(2L);
         Assertions.assertThat(repository.findById(id).get().getSaleInfo().getBuyerInfo().getId()).isNotEqualTo(1L);

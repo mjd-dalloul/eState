@@ -6,7 +6,6 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.*;
 
 import javax.persistence.*;
-import java.util.Set;
 
 @Table(uniqueConstraints = {
         @UniqueConstraint(
@@ -23,7 +22,7 @@ import java.util.Set;
 @JsonIgnoreProperties({"hibernateLazyInitializer"})
 public class ApplicationUser {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String email;
     @JsonIgnore

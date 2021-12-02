@@ -25,18 +25,6 @@ public class BuyingService {
 
     //todo optimize with one query
     public void buyProperty(BuyerInfo info, Long propertyId) {
-//        repository.updateSaleInfo(
-//                propertyId,
-//                SaleInfo.builder()
-//                        .buyerInfo(
-//                                ApplicationUser.builder()
-//                                .id(info.getId())
-//                                .build()
-//                        )
-//                        .saleDate(new Date(System.currentTimeMillis()))
-//                        .salePrice(info.getPrice())
-//                        .build()
-//        );
         final Property p = repository.findById(propertyId).orElseThrow(
                 () -> new NotFoundException("Can not found property with this id")
         );
@@ -51,6 +39,7 @@ public class BuyingService {
                 .build()
         );
         repository.save(p);
+        repository.flush();
     }
 
     public BuyFormModel fetchBuyFormData(Long propertyId, String userFullName) {

@@ -12,7 +12,7 @@ import java.util.Date;
 @Builder
 public class SaleInfo {
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn()
+    @JoinColumn(foreignKey = @ForeignKey(name = "Buyer_id"))
     private ApplicationUser buyerInfo;
     private Long salePrice;
     @Temporal(TemporalType.TIMESTAMP)
