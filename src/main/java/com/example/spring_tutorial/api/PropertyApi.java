@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.lang.Nullable;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -52,6 +53,7 @@ public class PropertyApi {
         );
     }
 
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @DeleteMapping("")
     public ResponseEntity<BaseResponse<Void>> deleteProperty(@RequestParam Long id) {
         service.deleteProperty(id);
@@ -63,6 +65,7 @@ public class PropertyApi {
         );
     }
 
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PutMapping("")
     public ResponseEntity<BaseResponse<Property>> updateProperty(
             @RequestParam Long id, @RequestBody @Valid PropertyViewModel propertyViewModel) {
@@ -76,6 +79,7 @@ public class PropertyApi {
         );
     }
 
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping("")
     public ResponseEntity<BaseResponse<Property>> createProperty(
             @RequestBody @Valid NewProperty newProperty) {

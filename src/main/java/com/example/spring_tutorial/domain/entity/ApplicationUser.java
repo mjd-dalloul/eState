@@ -1,11 +1,14 @@
 package com.example.spring_tutorial.domain.entity;
 
 
+import com.example.spring_tutorial.domain.dto.auth_dto.Role;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.HashSet;
+import java.util.Set;
 
 @Table(uniqueConstraints = {
         @UniqueConstraint(
@@ -15,7 +18,6 @@ import javax.persistence.*;
 @Entity
 @Setter
 @Getter
-@ToString
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -28,6 +30,7 @@ public class ApplicationUser {
     @JsonIgnore
     private String password;
     private String fullName;
-//    @OneToMany(fetch = FetchType.LAZY, mappedBy = "Property")
-//    private Set<Property> properties;
+    @ManyToMany(fetch = FetchType.EAGER)
+    private Set<Role> authorities = new HashSet<>();
+
 }

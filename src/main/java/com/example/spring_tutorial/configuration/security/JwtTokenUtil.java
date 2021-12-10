@@ -4,9 +4,13 @@ import com.example.spring_tutorial.domain.entity.ApplicationUser;
 import io.jsonwebtoken.*;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import static java.lang.String.format;
 
@@ -15,15 +19,21 @@ import static java.lang.String.format;
 public class JwtTokenUtil {
 
     private final String jwtSecret = "zdtlD3JK56m6wTTgsNFhqzjqP";
-    //private final String jwtIssuer = "example.io";
 
     private final Logger logger;
 
     public String generateAccessToken(ApplicationUser user) {
+        final String authorities = user.getAuthorities().stream().
+                map(GrantedAuthority::getAuthority)
+                .collect(Collectors.joining(","));
+
+        Map<String, Object> claims = new HashMap<>();
+        claims.put("Roles", authorities);
+
         return Jwts.builder()
+                .setClaims(claims)
                 .setSubject(format("%s,%s", user.getId(), user.getEmail()))
-                //.setIssuer(jwtIssuer)
-                .setIssuedAt(new Date())
+                .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + 7 * 24 * 60 * 60 * 1000)) // 1 week
                 .signWith(SignatureAlgorithm.HS512, jwtSecret)
                 .compact();

@@ -7,6 +7,7 @@ import com.example.spring_tutorial.service.ConstantService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -18,6 +19,7 @@ import java.util.List;
 public class ConstantApi {
     private final ConstantService service;
 
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PutMapping("")
     public ResponseEntity<BaseResponse<Constants>> changeConstantValue(
             @RequestBody @Valid ConstantViewModel constantViewModel
@@ -31,6 +33,7 @@ public class ConstantApi {
         );
     }
 
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping("")
     public ResponseEntity<BaseResponse<List<Constants>>> fetchConstants() {
         return ResponseEntity.ok().body(

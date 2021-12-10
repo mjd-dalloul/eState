@@ -5,6 +5,7 @@ import com.example.spring_tutorial.domain.entity.ApplicationUser;
 import com.example.spring_tutorial.repository.ApplicationUserRepository;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
@@ -15,7 +16,10 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.Collection;
+
+import static java.util.List.of;
+import static java.util.Optional.ofNullable;
 
 
 @Component
@@ -59,16 +63,12 @@ public class JwtFilter extends OncePerRequestFilter {
         }
 
         UserDetails userDetails = new CustomUserSecurity(user);
+        Collection<? extends GrantedAuthority> list = ofNullable(userDetails).map(UserDetails::getAuthorities).orElse(of());
 
         UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
-                userDetails, null,
-                new ArrayList<>()
-                //Optional.of(userDetails).map(UserDetails::getAuthorities).orElse(of())
+                userDetails, null, userDetails.getAuthorities()
         );
 
-//        authentication.setDetails(
-//                new WebAuthenticationDetailsSource().buildDetails(request)
-//        );
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
         chain.doFilter(request, response);
