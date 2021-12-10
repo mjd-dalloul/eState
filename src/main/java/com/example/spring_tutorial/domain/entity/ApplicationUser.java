@@ -1,7 +1,6 @@
 package com.example.spring_tutorial.domain.entity;
 
 
-import com.example.spring_tutorial.domain.dto.auth_dto.Role;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.*;
@@ -31,6 +30,8 @@ public class ApplicationUser {
     private String password;
     private String fullName;
     @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "user_authorities")
     private Set<Role> authorities = new HashSet<>();
 
 }

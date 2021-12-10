@@ -1,4 +1,4 @@
-package com.example.spring_tutorial.domain.dto.auth_dto;
+package com.example.spring_tutorial.domain.entity;
 
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;

@@ -1,9 +1,9 @@
 package com.example.spring_tutorial.configuration;
 
-import com.example.spring_tutorial.domain.dto.auth_dto.Role;
 import com.example.spring_tutorial.domain.entity.ApplicationUser;
 import com.example.spring_tutorial.domain.entity.Constants;
 import com.example.spring_tutorial.domain.entity.Property;
+import com.example.spring_tutorial.domain.entity.Role;
 import com.example.spring_tutorial.repository.ApplicationUserRepository;
 import com.example.spring_tutorial.repository.ConstantsRepository;
 import com.example.spring_tutorial.repository.PropertyRepository;
@@ -29,9 +29,9 @@ public class DataSeeder {
 
     @EventListener
     public void seed(ContextRefreshedEvent event) {
-        seedUserTable();
-        seedConstantTable();
-        seedPropertyTable();
+        //seedUserTable();
+        //seedConstantTable();
+        //seedPropertyTable();
     }
 
     private void seedPropertyTable() {
