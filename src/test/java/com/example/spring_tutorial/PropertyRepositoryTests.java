@@ -5,6 +5,7 @@ import com.example.spring_tutorial.domain.entity.ApplicationUser;
 import com.example.spring_tutorial.domain.entity.Constants;
 import com.example.spring_tutorial.domain.entity.Property;
 import com.example.spring_tutorial.domain.entity.SaleInfo;
+import com.example.spring_tutorial.repository.ApplicationUserRepository;
 import com.example.spring_tutorial.repository.ConstantsRepository;
 import com.example.spring_tutorial.repository.PropertyRepository;
 import org.assertj.core.api.Assertions;
@@ -15,7 +16,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @DataJpaTest
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
@@ -25,22 +28,40 @@ public class PropertyRepositoryTests {
     private PropertyRepository repository;
     @Autowired
     private ConstantsRepository constantsRepository;
+    @Autowired
+    private ApplicationUserRepository userRepository;
 
     @BeforeAll
     public void mockData() {
         constantsRepository.save(Constants.builder()
-                        .key(AppConstant.share)
-                        .value(7)
+                .key(AppConstant.share)
+                .value(7)
                 .build());
         constantsRepository.save(Constants.builder()
-                        .key(AppConstant.profitRate)
-                        .value(5)
+                .key(AppConstant.profitRate)
+                .value(5)
                 .build());
         repository.save(Property.builder()
-                        .id(1L)
+                .id(1L)
                 .description("test")
                 .price(213L)
                 .build());
+        userRepository.save(
+                ApplicationUser.builder()
+                        .fullName("Mjd")
+                        .email("majed.dalloul79@gmail.com")
+                        .password("password")
+                        .authorities(new HashSet<>())
+                        .build()
+        );
+        userRepository.save(
+                ApplicationUser.builder()
+                        .fullName("Mjd 2")
+                        .email("majed.dalloul@gmail.com")
+                        .password("password")
+                        .authorities(new HashSet<>())
+                        .build()
+        );
     }
 
     @Test
@@ -68,7 +89,7 @@ public class PropertyRepositoryTests {
 
     @Test
     public void editProperty() {
-         Property p = repository.findAll().get(0);
+        Property p = repository.findAll().get(0);
         p.setDescription("Just Edit that");
         repository.save(p);
         p = repository.findAll().get(0);
@@ -80,34 +101,58 @@ public class PropertyRepositoryTests {
         Property p = repository.findAll().get(0);
         Long id = p.getId();
         repository.delete(p);
-        Property deletedProperty =  repository.findById(id).orElse(null);
+        Property deletedProperty = repository.findById(id).orElse(null);
         Assertions.assertThat(deletedProperty).isEqualTo(null);
     }
 
     @Test
     public void optimisticLockTest() {
         final Long id = repository.findAll().get(0).getId();
-        Property firstRequest = repository.findById(id).get();
-        Property secondRequest = repository.findById(id).get();
+        final List<Long> users = userRepository.findAll().stream()
+                .map(ApplicationUser::getId).collect(Collectors.toList());
+        Property property = repository.findById(id).get();
+        Property firstRequest = copyProperty(property);
+        Property secondRequest = copyProperty(property);
+
         secondRequest.setSaleInfo(SaleInfo.builder()
-                        .saleDate(new Date(System.currentTimeMillis()))
-                        .salePrice(2020L)
-                        .buyerInfo(ApplicationUser.builder()
-                                .id(1L)
-                                .build())
+                .saleDate(new Date(System.currentTimeMillis()))
+                .salePrice(2020L)
+                .buyerInfo(ApplicationUser.builder()
+                        .id(users.get(0))
+                        .build())
                 .build());
         firstRequest.setSaleInfo(SaleInfo.builder()
                 .saleDate(new Date(System.currentTimeMillis()))
                 .salePrice(3030L)
                 .buyerInfo(ApplicationUser.builder()
-                        .id(2L)
+                        .id(users.get(1))
                         .build())
                 .build());
-        repository.flush();
         firstRequest = repository.save(firstRequest);
         repository.flush();
-        secondRequest = repository.save(secondRequest);
-        Assertions.assertThat(repository.findById(id).get().getSaleInfo().getBuyerInfo().getId()).isEqualTo(2L);
-        Assertions.assertThat(repository.findById(id).get().getSaleInfo().getBuyerInfo().getId()).isNotEqualTo(1L);
+        try {
+            secondRequest = repository.save(secondRequest);
+        } catch (Exception e) {
+            Assertions.assertThat(repository.findById(id)
+                    .get().getSaleInfo().getBuyerInfo()
+                    .getId()).isEqualTo(users.get(1));
+        }
+        Assertions.assertThat(repository.findById(id)
+                .get().getSaleInfo().getBuyerInfo()
+                .getId()).isNotEqualTo(users.get(0));
+    }
+
+    private Property copyProperty(Property property) {
+        return Property.builder()
+                .id(property.getId())
+                .description(property.getDescription())
+                .price(property.getPrice())
+                .createdBy(property.getCreatedBy())
+                .updatedBy(property.getUpdatedBy())
+                .updatedOn(property.getUpdatedOn())
+                .saleInfo(property.getSaleInfo())
+                .shares(property.getShares())
+                .version(property.getVersion())
+                .build();
     }
 }
