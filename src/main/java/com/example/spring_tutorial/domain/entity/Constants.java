@@ -4,13 +4,6 @@ import lombok.*;
 
 import javax.persistence.*;
 
-@Table(
-        uniqueConstraints = {
-                @UniqueConstraint(
-                        columnNames = {"key"}
-                )
-        }
-)
 @Entity
 @Getter @Setter @ToString
 @AllArgsConstructor
@@ -21,7 +14,13 @@ public class Constants {
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
 
+    @Column(
+            name = "parameter_key"
+    )
     private String key;
 
+    @Column(
+            name = "parameter_value"
+    )
     private Integer value;
 }
