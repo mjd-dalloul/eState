@@ -6,6 +6,7 @@ import com.example.spring_tutorial.domain.dto.property.PropertyViewModel;
 import com.example.spring_tutorial.domain.entity.Property;
 import com.example.spring_tutorial.service.PropertyService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.lang.Nullable;
@@ -18,6 +19,7 @@ import java.util.List;
 @RestController
 @RequestMapping(path = "api/property")
 @RequiredArgsConstructor
+@Profile("!receiver")
 public class PropertyApi {
 
     private final PropertyService service;

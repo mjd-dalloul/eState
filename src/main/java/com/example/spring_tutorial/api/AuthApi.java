@@ -6,6 +6,7 @@ import com.example.spring_tutorial.domain.dto.auth_dto.*;
 import com.example.spring_tutorial.domain.entity.ApplicationUser;
 import com.example.spring_tutorial.service.ApplicationUserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -22,6 +23,7 @@ import javax.validation.Valid;
 @RestController
 @RequestMapping(path = "api/public")
 @RequiredArgsConstructor
+@Profile("!receiver")
 public class AuthApi {
 
     private final AuthenticationManager authenticationManager;

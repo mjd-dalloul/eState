@@ -10,6 +10,7 @@ import com.example.spring_tutorial.repository.PropertyRepository;
 import com.example.spring_tutorial.repository.RoleRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -19,6 +20,7 @@ import java.util.List;
 
 @Configuration
 @RequiredArgsConstructor
+@Profile("!receiver")
 public class DataSeeder {
 
     private final ApplicationUserRepository userRepository;

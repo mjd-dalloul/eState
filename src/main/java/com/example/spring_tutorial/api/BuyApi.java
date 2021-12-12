@@ -10,6 +10,7 @@ import com.example.spring_tutorial.service.BuyingService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.CacheManager;
+import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -20,6 +21,7 @@ import javax.validation.Valid;
 @RestController
 @RequestMapping(path = "api/buy")
 @RequiredArgsConstructor
+@Profile("!receiver")
 public class BuyApi {
     private final BuyingService buyingService;
 

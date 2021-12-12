@@ -5,6 +5,7 @@ import com.example.spring_tutorial.domain.dto.constants_dto.ConstantViewModel;
 import com.example.spring_tutorial.domain.entity.Constants;
 import com.example.spring_tutorial.service.ConstantService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -16,6 +17,7 @@ import java.util.List;
 @RestController
 @RequestMapping(path = "api/constant")
 @RequiredArgsConstructor
+@Profile("!receiver")
 public class ConstantApi {
     private final ConstantService service;
 
