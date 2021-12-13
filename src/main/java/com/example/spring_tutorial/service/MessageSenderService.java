@@ -1,5 +1,6 @@
 package com.example.spring_tutorial.service;
 
+import com.example.spring_tutorial.configuration.AppConstant;
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
@@ -18,7 +19,6 @@ public class MessageSenderService {
     static Logger logger
             = LoggerFactory.getLogger(MessageSenderService.class);
 
-    private final static String QUEUE_NAME = "hello";
 
     public void sendMessage(String message)
             throws IOException, TimeoutException {
@@ -26,13 +26,13 @@ public class MessageSenderService {
         factory.setHost("localhost");
         Connection connection = factory.newConnection();
         Channel channel = connection.createChannel();
-        channel.queueDeclare(QUEUE_NAME,
+        channel.queueDeclare(AppConstant.QUEUE_NAME,
                 false,
                 false,
                 false,
                 null);
         channel.basicPublish("",
-                QUEUE_NAME,
+                AppConstant.QUEUE_NAME,
                 null,
                 message.getBytes(StandardCharsets.UTF_8));
         logger.debug("[!] Sent '" + message + "'");

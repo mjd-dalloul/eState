@@ -16,7 +16,8 @@ import java.util.concurrent.TimeoutException;
 public class MessageReceiverService {
     static Logger logger = LoggerFactory.getLogger(MessageReceiverService.class);
 
-    public void activeListener() throws IOException, TimeoutException {
+    public  static void main(String[] argv)
+            throws IOException, TimeoutException {
         ConnectionFactory connectionFactory = new ConnectionFactory();
         connectionFactory.setHost("localhost");
         Connection connection = connectionFactory.newConnection();
