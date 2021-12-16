@@ -33,8 +33,11 @@ public class ControllerLayerTesting {
 
     Property property;
 
+    ObjectMapper mapper;
+
     @BeforeEach
     public void init() {
+        mapper = new ObjectMapper();
         property = Property.builder()
                 .id(1L)
                 .description("test")
@@ -54,20 +57,11 @@ public class ControllerLayerTesting {
                 .build();
 
         mockMvc.perform(post("/api/property")
-                .contentType(asJsonString(newProperty))
+                .contentType(mapper.writeValueAsString(newProperty))
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON));
         verify(propertyService, times(1)).addProperty(any());
 
     }
 
-    private String asJsonString(final Object obj) {
-        try {
-            final ObjectMapper mapper = new ObjectMapper();
-            final String jsonContent = mapper.writeValueAsString(obj);
-            return jsonContent;
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
 }

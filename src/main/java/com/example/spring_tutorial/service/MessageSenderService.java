@@ -1,6 +1,8 @@
 package com.example.spring_tutorial.service;
 
 import com.example.spring_tutorial.configuration.AppConstant;
+import com.example.spring_tutorial.domain.dto.Shift;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
@@ -14,13 +16,12 @@ import java.nio.charset.StandardCharsets;
 import java.util.concurrent.TimeoutException;
 
 @Service
-@Profile("sender")
+@Profile("!receiver")
 public class MessageSenderService {
     static Logger logger
             = LoggerFactory.getLogger(MessageSenderService.class);
 
-
-    public void sendMessage(String message)
+    public void sendMessage(Shift message)
             throws IOException, TimeoutException {
         ConnectionFactory factory = new ConnectionFactory();
         factory.setHost("localhost");
@@ -34,7 +35,7 @@ public class MessageSenderService {
         channel.basicPublish("",
                 AppConstant.QUEUE_NAME,
                 null,
-                message.getBytes(StandardCharsets.UTF_8));
+               new ObjectMapper().writeValueAsString(message).getBytes(StandardCharsets.UTF_8));
         logger.debug("[!] Sent '" + message + "'");
         channel.close();
         connection.close();
