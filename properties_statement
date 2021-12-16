@@ -29,3 +29,25 @@ spring.datasource.initialization-mode=always
 spring.jpa.properties.hibernate.format_sql=true
 spring.datasource.driverClassName=com.microsoft.sqlserver.jdbc.SQLServerDriver
 spring.jpa.hibernate.ddl-auto = create-drop
+
+
+
+authentication and authorization:
+    authentication:
+        1- normal auth username and password (userDetailsService)
+        2- third party auth (authentication provider)
+        3- security context  (AnonymousAuthenticationToken)
+    authorization:
+        1- role vs authority
+        2- @PreAuthorize, @Secured and @RolesAllowed
+
+
+stateless requests
+
+
+
+
+
+
+
+

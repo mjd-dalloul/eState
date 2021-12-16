@@ -39,7 +39,7 @@ public class AuthApi {
 
             ApplicationUser user = ((CustomUserSecurity) authenticate.getPrincipal()).getUser();
             final AuthorizedUserView retUser = new AuthorizedUserView(
-                    new UserView(user.getId(), user.getEmail(), user.getFullName()),
+                    user,
                     jwtTokenUtil.generateAccessToken(user)
             );
             return ResponseEntity.ok().body(
@@ -56,7 +56,7 @@ public class AuthApi {
         final AuthorizedUserView ret = new AuthorizedUserView();
         final UserView userView = new UserView(newUser.getId(), newUser.getEmail(), newUser.getFullName());
         ret.setToken(jwtTokenUtil.generateAccessToken(newUser));
-        ret.setUser(userView);
+        ret.setUser(newUser);
         return ResponseEntity.ok().body(
                 new BaseResponse<>(ret, true, HttpStatus.CREATED.value())
         );

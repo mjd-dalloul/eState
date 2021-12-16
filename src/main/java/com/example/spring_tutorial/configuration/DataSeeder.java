@@ -31,9 +31,9 @@ public class DataSeeder {
 
     @EventListener
     public void seed(ContextRefreshedEvent event) {
-        seedUserTable();
-        seedConstantTable();
-        seedPropertyTable();
+//        seedUserTable();
+//        seedConstantTable();
+//        seedPropertyTable();
     }
 
     private void seedPropertyTable() {
